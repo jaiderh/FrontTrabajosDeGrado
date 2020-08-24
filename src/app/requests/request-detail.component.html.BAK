@@ -1,0 +1,122 @@
+<div class="doc-page">
+
+    <!-- HEADER -->
+    <app-header-content [title]="title"></app-header-content>
+      <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div class="content" fxLayout="row" fxLayoutAlign="center start">
+      <div fxFlex.gt-xs="80%" fxFlex>
+
+        <form novalidate [formGroup]="requestForm">
+
+          <h4>Información Básica</h4>
+
+          <mat-card>
+            <mat-card-content fxLayout="column" fxLayoutGap="10px">
+
+              <div fxFlex class="hint-text-note" *ngIf="selectedRequestType?.HintText">
+                <strong>IMPORTANTE: </strong>
+                Si no adjunta los documentos requeridos su solicitud sera Rechazada.
+              </div>
+
+              <mat-form-field fxFlex>
+                <mat-select formControlName="RequestTypeId"
+                            placeholder="Tipo de Solicitud">
+                  <mat-option *ngFor="let requestType of requestTypes"
+                              [value]="requestType.Id"
+                              [disabled]="formDisabled">
+                    {{ requestType.Name }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint align="start" *ngIf="selectedRequestType?.HintText" >
+                  <mat-icon>warning</mat-icon>
+                  {{ selectedRequestType.HintText }}
+                </mat-hint>
+                <mat-error *ngIf="displayMessage['RequestTypeId']">
+                    {{ displayMessage['RequestTypeId'] }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field fxFlex [style.display]="selectedRequestType?.RequiresDetail? 'block': 'none'">
+                <input matInput
+                        [placeholder]="selectedRequestType?.LabelDetail"
+                        formControlName="RequestTypeDetail"
+                        [disabled]="formDisabled">
+                <mat-error *ngIf="displayMessage['RequestTypeDetail']">
+                    {{ displayMessage['RequestTypeDetail'] }}
+                </mat-error>
+              </mat-form-field>
+
+              <div fxLayout="row">
+                <mat-form-field fxFlex="50">
+                  <mat-select placeholder="Programa" formControlName="ProgramId">
+                    <mat-option *ngFor="let program of Programs" [value]="program.Id">
+                      {{ program.Name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="displayMessage['ProgramId']">
+                      {{ displayMessage['ProgramId'] }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field fxFlex="50">
+                  <mat-select placeholder="Sede" formControlName="BranchId">
+                    <mat-option *ngFor="let branch of Branches" [value]="branch.Id">
+                      {{ branch.Name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="displayMessage['BranchId']">
+                      {{ displayMessage['BranchId'] }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field>
+                <mat-select placeholder="Facultad" [disabled]="true" formControlName="FacultyId">
+                  <mat-option *ngFor="let faculty of Faculties" [value]="faculty.Id">
+                    {{ faculty.Name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </mat-card-content>
+          </mat-card>
+
+
+          <h4>Solicitantes</h4>
+          <mat-card class="applicants-card">
+            <mat-card-content>
+
+              <mat-tab-group formArrayName="Applicants">
+                <mat-tab *ngFor="let applicant of Applicants.controls; let i=index"
+                          [formGroupName]="i"
+                          [label]="applicant.get('Name').value + ' ' + applicant.get('LastName').value"
+                          class="applicant-detail" >
+                  {{ 'Applicant:' }}
+                </mat-tab>
+              </mat-tab-group>
+
+              <div fxLayout="row" fxLayoutAlign="end start">
+                <button align="end" mat-button>
+                  <mat-icon class="mdi mdi-account-plus"></mat-icon>
+                  Agregar otro solicitante
+                </button>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+
+        </form>
+      </div>
+
+    </div>
+    <!-- / CONTENT -->
+
+
+  <br>Dirty: {{ requestForm.dirty }}
+  <br>Touched: {{ requestForm.touched }}
+  <br>Valid: {{ requestForm.valid }}
+  <br>Value: {{ requestForm.value | json }}
+
+</div>

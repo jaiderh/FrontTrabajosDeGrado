@@ -1,0 +1,43 @@
+.hint-text-note {
+  color: steelblue;
+  font-style: italic;
+  font-size: 75%;
+  margin-bottom: 10px;
+}
+
+.applicants-card {
+  padding: 0;
+}
+
+.applicant-detail {
+  padding: 24px;
+}
+
+.btn-submit {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+}
+
+::ng-deep .remove-applicant .mat-icon {
+  font-size: 16px;
+}
+
+::ng-deep .remove-applicant {
+  color: rgba(128,128,128,0.2);
+}
+
+::ng-deep .mat-tab-label:hover .remove-applicant {
+  color: darkolivegreen;
+}
+.remove-file {
+  color: rgba(128,128,128,0);
+}
+.mat-list-item:hover .remove-file {
+  color: darkolivegreen;
+}
+
+.policy-error {
+  font-size: 75%;
+  padding-left: 28px;
+}

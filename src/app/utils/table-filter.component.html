@@ -1,0 +1,64 @@
+
+<button mat-icon-button
+        [matMenuTriggerFor]="menuRef"
+        #menuTrigger="matMenuTrigger"
+        [color]="filtered? 'warn': null">
+    <mat-icon class="mat-18">filter_list</mat-icon>
+</button>
+
+<mat-menu #menuRef="matMenu">
+  <div class="menu-filter"
+        fxLayout="column"
+        (click)="handleClick($event)">
+    <mat-form-field>
+      <mat-select (click)="handleClick($event)"
+                  #matSelectColumn="matSelect"
+                  placeholder="Filtrar por columna"
+                  [(ngModel)]="selectedFilterSetting">
+        <mat-option *ngFor="let filterSetting of filterSettings" [value]="filterSetting" >
+          {{ filterSetting.columnCaption }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field  *ngIf="selectedFilterSetting?.columnOptions?.list">
+      <mat-select [(ngModel)]="columnValue"
+                  (click)="handleClick($event)"
+                  #matSelectValue="matSelect"
+                  placeholder="con valor">
+          <mat-option *ngFor="let option of selectedFilterSetting.columnOptions.list"
+                      [value]="option[selectedFilterSetting.columnOptions.fieldValue]">
+            {{ option[selectedFilterSetting.columnOptions.fieldCaption] }}
+          </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field  *ngIf="!selectedFilterSetting?.columnOptions">
+      <input matInput
+              [(ngModel)]="columnValue"
+              (click)="handleClick($event)"
+              #matInputValue="matInput"
+              type="text"
+              required
+              placeholder="con valor">
+    </mat-form-field>
+
+    <!-- FOOTER BUTTONS -->
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <button  matTooltip="quitar filtro"
+                *ngIf="filtered"
+                color="warn"
+                mat-icon-button
+                (click)="onRemoveFilter($event)">
+          <mat-icon class="mat-18">close</mat-icon>
+      </button>
+
+      <div fxFlex></div>
+
+      <button  matTooltip="aplicar filtro" mat-icon-button (click)="onApplyFilter($event)">
+        <mat-icon class="mat-18">check</mat-icon>
+      </button>
+    </div>
+
+  </div>
+</mat-menu>

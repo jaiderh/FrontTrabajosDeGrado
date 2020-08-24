@@ -1,0 +1,29 @@
+<h2 matDialogTitle>{{title}}</h2>
+
+<mat-dialog-content>
+  <div  *ngIf="message"
+        class="generic-dialog-message"
+        fxFlex
+        fxFill [innerHtml]="htmlContent">
+  </div>
+
+  <div *ngIf="type === DialogType.PROGRESS"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        fxFlex
+        fxFill
+        style="overflow:hidden">
+    <mat-spinner [mode]="indeterminate" [diameter]="progressSpinnerDiameter">
+    </mat-spinner>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="!(type === DialogType.PROGRESS)" align="end" >
+
+  <div *ngIf="type === DialogType.CONFIRM"  fxLayout="row">
+    <button mat-button (click)="close( DialogResponse.NO )">{{ noLabel }}</button>
+    <button mat-button (click)="close( DialogResponse.YES )">{{ yesLabel }}</button>
+  </div>
+
+  <button *ngIf="type === DialogType.INFORMATION"  mat-button (click)="close( DialogResponse.OK )">{{ okLabel }}</button>
+</mat-dialog-actions>

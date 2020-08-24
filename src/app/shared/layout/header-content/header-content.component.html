@@ -1,0 +1,7 @@
+<div class="header mat-elevation-z1" fxLayout="row" fxLayoutAlign="space-between">
+  <div fxLayout="column" fxLayoutAlign="center start">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="title">{{ title }}</div>
+  </div>
+  <ng-content layout="row" select="[page-actions]"></ng-content>
+</div>

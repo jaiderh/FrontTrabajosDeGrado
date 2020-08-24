@@ -1,0 +1,158 @@
+
+import { Component, OnInit, Inject, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControlName, FormArray, FormControl } from '@angular/forms';
+import { APP_CONFIG, IAppConfig } from '../app.config';
+import { SharedService } from '../shared/shared.service';
+import { RequestType, BasicData } from '../models/initial-settings';
+import { GenericValidator } from '../shared/generic-validator';
+
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/merge';
+import { Observable } from 'rxjs/Observable';
+import { IRequestDetail, ApplicantDetail } from '../models/request';
+import { ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-request-detail',
+  templateUrl: './request-detail.component.html',
+  styleUrls: ['./request-detail.component.css']
+})
+export class RequestDetailComponent implements OnInit, AfterViewInit {
+
+  @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
+
+  formDisabled: boolean;
+  requestForm: FormGroup;
+  requestTypes: RequestType[];
+  Branches: BasicData[];
+  Programs: BasicData[];
+  Faculties: BasicData[];
+  request: IRequestDetail;
+  selectedRequestType: RequestType;
+
+  title: string;
+
+  displayMessage: { [key: string]: string } = {};
+  validationMessages: { [key: string]: { [key: string]: string } };
+  genericValidator: GenericValidator;
+
+  constructor(private formBuilder: FormBuilder,
+               sharedService: SharedService,
+              private route: ActivatedRoute) {
+
+    this.requestTypes = sharedService.settings.RequestTypes;
+    this.Branches = sharedService.settings.Branches;
+    this.Programs = sharedService.settings.Programs;
+    this.Faculties = sharedService.settings.Faculties;
+
+
+    this.validationMessages = {
+      RequestTypeId: { required: 'Especifique el tipo de solicitud' },
+      RequestTypeDetail: { required: 'Especifique el valor requerido' },
+      BranchId: { required: 'Especifique la sede' },
+      ProgramId: {  required: 'Especifique el programa' }
+    };
+  }
+
+  ngOnInit() {
+    this.requestForm = this.formBuilder.group({
+      RequestTypeId: [null, Validators.required],
+      RequestTypeDetail: '',
+      BranchId: [null, Validators.required],
+      ProgramId: [null, Validators.required],
+      FacultyId: null,
+      Applicants: this.formBuilder.array([this.buildApplicant()])
+    });
+
+    this.requestForm.get('RequestTypeId').valueChanges.subscribe(
+      value => this.onRequestTypeChange(value)
+    );
+
+    this.onRequestRetrieved(  this.route.snapshot.data['request'] );
+  }
+
+  buildApplicant(): FormGroup {
+    return this.formBuilder.group({
+      Name: [ '', Validators.required],
+      LastName: [ '', Validators.required],
+      Document: [ '', Validators.required],
+      Code: null,
+      ApplicantTypeId: [ null, Validators.required],
+      Email: [ '', Validators.required],
+      Phone: [ '', Validators.required],
+    });
+  }
+
+  buildApplicantArray( applicants: ApplicantDetail[] ): FormArray {
+    const formGroupList = applicants.map( applicant =>  {
+      const formGroup = this.buildApplicant() ;
+      formGroup.setValue({
+        Name: applicant.Name,
+        LastName: applicant.LastName,
+        Document: applicant.Document,
+        Code: applicant.Code,
+        ApplicantTypeId: applicant.ApplicantTypeId,
+        Email: applicant.Email,
+        Phone: applicant.Phone
+      });
+      return formGroup;
+    });
+    return this.formBuilder.array( formGroupList );
+  }
+
+  get Applicants(): FormArray {
+    return <FormArray>this.requestForm.get('Applicants');
+  }
+
+
+  ngAfterViewInit(): void {
+    // Watch for the blur event from any input element on the form.
+    const controlBlurs: Observable<any>[] = this.formInputElements
+        .map((formControl: ElementRef) => Observable.fromEvent(formControl.nativeElement, 'blur'));
+
+    // Merge the blur event observable with the valueChanges observable
+    Observable.merge(this.requestForm.valueChanges, ...controlBlurs).debounceTime(800).subscribe(value => {
+        this.displayMessage = this.genericValidator.processMessages(this.requestForm);
+    });
+  }
+
+  onRequestRetrieved(request: IRequestDetail): void {
+    if (this.requestForm) {
+        this.requestForm.reset();
+    }
+    this.request = request;
+
+    this.title = ( this.request.Id === 0 )
+                    ? 'Nueva Solicitud'
+                    : `Solicitud ${request.Code}`;
+
+    this.requestForm.patchValue({
+        RequestTypeId: this.request.RequestTypeId,
+        RequestTypeDetail: this.request.RequestTypeDetail,
+        ProgramId: this.request.ProgramId,
+        BranchId: this.request.BranchId,
+        FacultyId: this.request.Id === 0
+                    ? this.Faculties[0].Id
+                    : this.request.FacultyId,
+    });
+    this.requestForm.setControl('Applicants', this.buildApplicantArray(this.request.Applicants) );
+    this.onRequestTypeChange(this.request.RequestTypeId);
+  }
+
+  onRequestTypeChange(newId: number) {
+    const reqTypeControl = this.requestForm.get( 'RequestTypeDetail' );
+    this.selectedRequestType = this.requestTypes.find( reqType => reqType.Id === newId );
+
+    if ( this.selectedRequestType != null
+          && this.selectedRequestType.RequiresDetail ) {
+      reqTypeControl.setValidators( Validators.required );
+    } else {
+      this.requestForm.patchValue( { RequestTypeDetail: '' } );
+      reqTypeControl.clearValidators();
+    }
+    reqTypeControl.updateValueAndValidity();
+  }
+
+
+}

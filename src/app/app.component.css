@@ -1,0 +1,133 @@
+
+.app-container {/*
+  display: flex;
+  flex-direction: column;*/
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.app-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+}
+
+.mat-drawer {
+  background-color: rgb(38, 50, 56);
+}
+
+
+.navegation-item  .mat-subheader {
+  font-size: 12px;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+
+.navegation-item.mat-list-item {
+  font-size: 14px;
+  padding: 0 0 0 4px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mat-list-item .mat-icon {
+  margin-right: 16px !important;
+}
+
+.folded .mat-list-item .mat-icon {
+  margin: 0;
+}
+
+.folded mat-drawer:not(.isMouseOverMenu) .mat-list-item.iconless
+ {
+  display: none;
+}
+
+mat-drawer{
+  -webkit-transition: width .3s !important; /* For Safari 3.1 to 6.0 */
+  transition: width .3s !important;
+}
+
+mat-drawer-content {
+  -webkit-transition: margin-left .3s !important; /* For Safari 3.1 to 6.0 */
+  transition: margin-left .3s !important;
+}
+
+/*
+mat-nav-list, .header-items {
+  padding: 0 10px;
+}
+*/
+
+.folded .mat-drawer:not(.isMouseOverMenu) .navegation-item.header span[mat-subheader] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.navegation-item.header {
+  padding: 0 0 0 24px;
+  height: 48px;
+  display : flex;
+  align-items: center;
+}
+
+.folded .mat-drawer:not(.isMouseOverMenu) .navegation-item.header:before {
+  content: '';
+  display: block;
+  color: white;
+  position: absolute;
+  min-width: 16px;
+  border-top: 1px solid;
+  opacity: .2;
+}
+
+.folded.isMouseOverMenu {
+  width: 245;
+}
+
+.folded .mat-drawer:not(.isMouseOverMenu) mat-list-item .item-text {
+  opacity: 0;
+}
+
+
+.item-text{
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+span[mat-subheader]{
+  -webkit-transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Mat-Progress-bar */
+.mat-progress-bar {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  box-shadow: 0 0 10px 0;
+  height: 4px;
+  color: #cddc39;
+}
+

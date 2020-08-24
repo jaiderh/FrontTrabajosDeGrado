@@ -1,0 +1,27 @@
+<div class="doc-page">
+
+  <!-- HEADER -->
+  <app-header-content [title]="template.Name">
+    <div page-actions>
+      <!-- LOADER -->
+      <app-loader #loader="loader" diameter="40" [type]="LoaderType.SPINNER_ONLY"></app-loader>
+      <!-- ***** -->
+      <button mat-mini-fab
+              color="accent"
+              matTooltip="Guardar Plantilla"
+              (click)="saveTemplate()"
+              *ngIf="!formDisabled && !loader.show">
+        <mat-icon class="mat-18">save</mat-icon>
+      </button>
+    </div>
+  </app-header-content>
+  <!-- END HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+    <form novalidate #templateForm="ngForm">
+      <ckeditor [config]="editorConfig" fxFill name="Detail" [(ngModel)]="template.Content"></ckeditor>
+    </form>
+  </div>
+  <!-- END CONTENT -->
+</div>

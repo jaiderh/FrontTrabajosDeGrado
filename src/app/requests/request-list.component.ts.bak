@@ -1,0 +1,104 @@
+import { FilterSetting } from './../models/filter-setting';
+import { QueryParams, FilterParam } from './../models/query-params';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit,
+  Input, Inject, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { RequestService } from './request.service';
+import { Subscription } from 'rxjs/Subscription';
+import { RequestListDataSource } from './request-list.datasource';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+
+
+import {debounceTime, distinctUntilChanged, startWith, tap, delay} from 'rxjs/operators';
+import {merge} from 'rxjs/observable/merge';
+import {fromEvent} from 'rxjs/observable/fromEvent';
+import { TableFilterComponent } from '../utils/table-filter.component';
+import { IRequest } from '../models/request';
+import { DataSource } from '@angular/cdk/table';
+import { Observable } from 'rxjs/Observable';
+import { IAppConfig, APP_CONFIG } from '../app.config';
+
+@Component({
+  selector: 'app-request-list',
+  templateUrl: './request-list.component.html',
+  styleUrls: ['./request-list.component.css']
+})
+export class RequestListComponent implements AfterViewInit, OnInit, OnDestroy {
+  queryParams: QueryParams;
+  subscription: Subscription;
+  dataSource: RequestListDataSource;
+
+  title = 'Administración de Solicitudes';
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('filterRef') tableFilter: TableFilterComponent;
+
+  @Input() columns: string[];
+  displayedColumns: string[];
+  filterSettings: FilterSetting[];
+
+  @Output() clickDetail: EventEmitter<number> = new EventEmitter<number>();
+
+  @Input() initialData: IRequest[];
+  isPreloaded: boolean;
+
+  constructor( @Inject(APP_CONFIG) private config: IAppConfig,
+                private requestService: RequestService,
+                private cdRef: ChangeDetectorRef) {
+
+    this.queryParams = new QueryParams();
+    this.queryParams.PageIndex = 1;
+    this.queryParams.PageSize = 10;
+
+    this.displayedColumns = this.config.RequestList_displayedColumns;
+    this.filterSettings = config.RequestList_filterSettings;
+
+    this.dataSource = new RequestListDataSource(this.requestService);
+  }
+
+  ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+  }
+
+  ngAfterViewInit() {
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.tableFilter.filter.subscribe(() => this.paginator.pageIndex = 0);
+
+    merge(this.sort.sortChange, this.paginator.page, this.tableFilter.filter)
+    .pipe(
+        tap(() => this.loadRequestsPage())
+    )
+    .subscribe();
+    this.loadRequestsPage();
+
+    // this.cdRef.detectChanges();
+  }
+
+  /*
+  onClickDetail(requestId: number) {
+    if ( this.clickDetail != null ) {
+      this.clickDetail.emit(requestId);
+    }
+  }
+*/
+  loadRequestsPage() {
+    this.queryParams.clear();
+    this.queryParams.PageSize = this.paginator.pageSize;
+    this.queryParams.PageIndex = this.paginator.pageIndex;
+    this.queryParams.SortField = this.sort.active;
+    this.queryParams.SortDirection = this.sort.direction;
+
+    if (this.tableFilter.filterResult != null && this.tableFilter.filtered) {
+      this.queryParams.FilterBy.push(
+        new FilterParam(
+          this.tableFilter.filterResult.fieldName,
+          this.tableFilter.filterResult.comparator,
+          this.tableFilter.filterResult.value
+        )
+      );
+    }
+    (this.dataSource as RequestListDataSource ).loadList(this.queryParams);
+  }
+}

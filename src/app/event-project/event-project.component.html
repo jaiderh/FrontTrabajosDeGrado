@@ -1,0 +1,449 @@
+<form  novalidate #requestForm="ngForm" (ngSubmit)="onSubmit(requestForm)">
+
+  <div fxLayout="row" fxLayoutAlign="center center" >
+    <mat-card class="body-page mat-elevation-z6" fxFlex.lt-sm="100%" fxFlex.sm="80%" fxFlex.gt-sm="60%">
+
+      <mat-card-content fxLayout="column">
+
+        <h2>1. Datos Básicos de la Solicitud</h2>
+
+
+        <mat-card>
+          <mat-card-content fxLayout="column">
+
+            <mat-form-field floatLabel="never"  fxFlex>
+              <!-- <mat-icon matPrefix [svgIcon]="formInput.icon"></mat-icon> -->
+              <mat-select [(ngModel)]="data.DatosEvento.Tipo"
+                          required
+                          #TipoEvento="ngModel"
+                          name="TipoEvento"
+                          placeholder="Seleccione el tipo de solicitud"
+                          (selectionChange)="onChange()">
+                <mat-option value="Solicitud Aprobación de Anteproyecto">Solicitud Aprobación de Anteproyecto</mat-option>
+              </mat-select>
+              <mat-error *ngIf="TipoEvento.invalid && (TipoEvento.dirty || TipoEvento.touched)">
+                  Especifique el tipo de solicitud
+              </mat-error>
+            </mat-form-field>
+
+            <div fxLayout="row" fxLayoutGap="10px">
+              <mat-form-field fxFlex="50">
+                <mat-select name="Programa"
+                            [(ngModel)]="data.DatosProyecto.Programa"
+                            #Programa="ngModel"
+                            placeholder="Programa"
+                            [disabled]="formDisabled"
+                            required>
+                  <mat-option *ngFor="let programa of Programas" [value]="programa.Name">
+                    {{ programa.Name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="Programa?.errors?.required && ( Programa.touched || requestForm.submitted )">
+                    Especifique el programa
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field fxFlex="50">
+                <mat-select name="Sede"
+                            [(ngModel)]="data.DatosProyecto.Sede"
+                            #Sede="ngModel"
+                            placeholder="Sede"
+                            [disabled]="formDisabled"
+                            required>
+                  <mat-option *ngFor="let sede of Sedes" [value]="sede.Name">
+                    {{ sede.Name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="Sede?.errors?.required && ( Sede.touched || requestForm.submitted )">
+                    Especifique la sede
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field>
+              <mat-select name="Facultad"
+                          [(ngModel)]="data.DatosProyecto.Facultad"
+                          placeholder="Facultad" [disabled]="true">
+                <mat-option *ngFor="let facultad of Facultades" [value]="facultad.Name">
+                  {{ facultad.Name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </mat-card-content>
+        </mat-card>
+
+
+
+        <h2>2. Datos del Proyecto</h2>
+
+        <mat-card>
+          <mat-card-content fxLayout="column">
+            <mat-form-field>
+              <input name="Titulo"
+                      [(ngModel)]="data.DatosProyecto.Titulo"
+                      matInput
+                      #Titulo="ngModel"
+                      placeholder="Título del Proyecto"
+                      required
+                      type="text"
+                      [disabled]="formDisabled"
+                      maxlength="300">
+              <mat-error *ngIf="Titulo?.errors?.required && ( Titulo.touched || requestForm.submitted )">
+                  Especifique el título del proyecto
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Descripción del Proyecto</mat-label>
+              <textarea matInput
+                        name="Descripcion"
+                        [(ngModel)]="data.DatosProyecto.Descripcion"
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="10"></textarea>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+
+        <div class="autores">
+          <h2> {{ autores && autores.length === 1 ? 'Autor' : 'Autores' }}</h2>
+
+          <mat-card class="wizard autores">
+            <mat-card-content style="min-height: 330px">
+
+              <mat-tab-group ngModelGroup="autores">
+                <mat-tab *ngFor="let autor of autores; let i = index" [ngModelGroup]="i" >
+                  <ng-template mat-tab-label>
+                    {{
+                      autor.Nombres
+                            ? autor.Nombres + ' ' + ((autor.Apellidos) ? autor.Apellidos : '')
+                            : 'Datos del Autor'
+                    }}
+                    <button mat-icon-button
+                            (click)="borrarAutor(i)"
+                            *ngIf="autores.length > 1 && !formDisabled"
+                            class="borrar-autor">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </ng-template>
+
+                  <div fxLayout="column" fxLayoutGap="10px" class="detalle-autor">
+
+                    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                      <mat-form-field fxFlex="50">
+                        <input name="Name"
+                                [(ngModel)]="autor.Nombres"
+                                matInput
+                                #Name="ngModel"
+                                placeholder="Nombres"
+                                required
+                                type="text"
+                                [disabled]="formDisabled"
+                                maxlength="80">
+                        <mat-error *ngIf="Nombres?.errors?.required && ( Nombres.touched || requestForm.submitted )">
+                            Especifique el nombre del solicitante
+                        </mat-error>
+                      </mat-form-field>
+
+                      <mat-form-field fxFlex="50">
+                        <input name="LastName"
+                                [(ngModel)]="autor.Apellidos"
+                                matInput
+                                #LastName="ngModel"
+                                placeholder="Apellidos"
+                                required
+                                type="text"
+                                [disabled]="formDisabled"
+                                maxlength="80">
+                        <mat-error *ngIf="Apellidos?.errors?.required && ( Apellidos.touched || requestForm.submitted )">
+                            Especifique los apellidos del solicitante
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                      <mat-form-field fxFlex>
+                          <input name="Identificacion"
+                                  [(ngModel)]="autor.Identificacion"
+                                  matInput
+                                  #Identificacion="ngModel"
+                                  placeholder="Identificación"
+                                  required
+                                  type="tel"
+                                  maxlength="12"
+                                  minlength="5"
+                                  [disabled]="formDisabled"
+                                  appNumbersOnly>
+                          <mat-error *ngIf="Identificacion?.errors?.required && (Identificacion.touched || requestForm.submitted )">
+                              Especifique la identificación del solicitante
+                          </mat-error>
+                          <mat-error *ngIf="Identificacion?.errors?.minlength && ( Identificacion.touched || requestForm.submitted )">
+                              La identificación no es válida (long mínima requerida:5)
+                          </mat-error>
+                      </mat-form-field>
+
+                      <mat-form-field fxFlex>
+                        <input name="Codigo"
+                                [(ngModel)]="autor.Codigo"
+                                matInput
+                                #Codigo="ngModel"
+                                placeholder="Código"
+                                required
+                                type="tel"
+                                maxlength="9"
+                                minlength="9"
+                                [disabled]="formDisabled"
+                                appNumbersOnly>
+                        <mat-error *ngIf="Codigo?.errors?.required && ( Codigo.touched || requestForm.submitted )">
+                            Especifique el código del estudiante
+                        </mat-error>
+                        <mat-error *ngIf="Codigo?.errors?.minlength && ( Codigo.touched || requestForm.submitted )">
+                            El Código no es válido (long mínima requerida:9)
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                      <mat-form-field fxFlex="50">
+                        <mat-icon matPrefix>email</mat-icon>
+                        <input name="Email"
+                                [(ngModel)]="autor.Email"
+                                matInput
+                                #Email="ngModel"
+                                placeholder="Email"
+                                required
+                                type="email"
+                                maxlength="80"
+                                [disabled]="formDisabled"
+                                email>
+                        <mat-error *ngIf="Email?.errors?.required && ( Email.touched || requestForm.submitted )">
+                          Especifique el email del solicitante
+                        </mat-error>
+                        <mat-error *ngIf="Email?.errors?.email && Email.touched">
+                            El email no tiene formato de correo electrónico válido.
+                        </mat-error>
+                      </mat-form-field>
+
+                      <mat-form-field fxFlex="50">
+                        <mat-icon matPrefix>phone</mat-icon>
+                        <input name="Telefono"
+                                [(ngModel)]="autor.Telefono"
+                                matInput
+                                #Phone="ngModel"
+                                placeholder="Teléfono"
+                                required
+                                type="tel"
+                                maxlength="10"
+                                minlength="7"
+                                [disabled]="formDisabled"
+                                appNumbersOnly>
+                        <mat-error *ngIf="Telefono?.errors?.required && ( Telefono.touched || Telefono.submitted )">
+                          Especifique el teléfono del solicitante
+                        </mat-error>
+                        <mat-error *ngIf="Telefono?.errors?.minlength && ( Telefono.touched || Telefono.submitted )">
+                            El teléfono no es válido (long mínima requerida:7)
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+
+
+                    <div fxLayout="row" fxLayoutAlign="end start" *ngIf="!formDisabled">
+                      <button align="end"
+                              mat-button (click)="agregarAutor()"
+                              color="primary"
+                              type="button"
+                              *ngIf="autores.length < MAX_REQUEST_APPLICANTS">
+                        <mat-icon class="mdi mdi-account-plus"></mat-icon>
+                        Agregar otro autor
+                      </button>
+                    </div>
+
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+
+
+            </mat-card-content>
+          </mat-card>
+
+
+
+
+          <h2>Director</h2>
+
+          <mat-card>
+            <mat-card-content>
+              <div fxLayout="column" fxLayoutGap="10px" class="detalle-autor">
+
+
+                <section class="tipo-director">
+                  <label>Tipo de Director:</label>
+                  <mat-radio-group
+                      [(ngModel)]="director.DetalleRol"
+                      name="DetalleRol">
+                    <mat-radio-button value="Interno">
+                      Interno
+                    </mat-radio-button>
+                    <mat-radio-button value="Externo">
+                      Externo
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </section>
+
+                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                  <mat-form-field fxFlex="50">
+                    <input name="NombresDirector"
+                            [(ngModel)]="director.Nombres"
+                            matInput
+                            #NombresDirector="ngModel"
+                            placeholder="Nombres"
+                            type="text"
+                            [disabled]="formDisabled"
+                            maxlength="80">
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="50">
+                    <input name="ApellidosDirector"
+                            [(ngModel)]="director.Apellidos"
+                            matInput
+                            #ApellidosDirector="ngModel"
+                            placeholder="Apellidos"
+                            type="text"
+                            [disabled]="formDisabled"
+                            maxlength="80">
+                  </mat-form-field>
+                </div>
+
+                <!-- <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                  <mat-form-field fxFlex>
+                      <input name="Identificacion"
+                              [(ngModel)]="autor.Identificacion"
+                              matInput
+                              #Identificacion="ngModel"
+                              placeholder="Identificación"
+                              required
+                              type="tel"
+                              maxlength="11"
+                              minlength="5"
+                              [disabled]="formDisabled"
+                              appNumbersOnly>
+                      <mat-error *ngIf="Identificacion?.errors?.required && (Identificacion.touched || requestForm.submitted )">
+                          Especifique la identificación del solicitante
+                      </mat-error>
+                      <mat-error *ngIf="Identificacion?.errors?.minlength && ( Identificacion.touched || requestForm.submitted )">
+                          La identificación no es válida (long mínima requerida:5)
+                      </mat-error>
+                  </mat-form-field>
+                </div> -->
+
+                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                  <mat-form-field fxFlex="50">
+                    <mat-icon matPrefix>email</mat-icon>
+                    <input name="EmailDirector"
+                            [(ngModel)]="director.Email"
+                            matInput
+                            #EmailDirector="ngModel"
+                            placeholder="Email"
+                            type="email"
+                            maxlength="80"
+                            [disabled]="formDisabled"
+                            email>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="50">
+                    <mat-icon matPrefix>phone</mat-icon>
+                    <input name="TelefonoDirector"
+                            [(ngModel)]="director.Telefono"
+                            matInput
+                            #TelefonoDirector="ngModel"
+                            placeholder="Teléfono"
+                            type="tel"
+                            maxlength="10"
+                            minlength="7"
+                            [disabled]="formDisabled"
+                            appNumbersOnly>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+
+          <h2>3. Detalle de la Solicitud</h2>
+
+          <mat-card>
+            <mat-card-content>
+              <ckeditor [config]="editorConfig" fxFill name="Detail" [(ngModel)]="data.DatosEvento.Detalle"></ckeditor>
+            </mat-card-content>
+          </mat-card>
+
+
+          <h2>4. Archivos Adjuntos *</h2>
+          <mat-card>
+            <mat-card-content fxLayout="column" fxLayoutAlign="start start">
+
+              <div fxFlex class="hint-text-note" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon>info</mat-icon>
+                <span>Máximo {{ MAX_FILE_COUNT }} Archivos de hasta de 5 MB en formato de imagen, pdf, excel o word.</span>
+              </div>
+
+                                <!-- (click)="downloadFile(file.FileName)" -->
+              <mat-list *ngIf="data.DatosEvento.Archivos.length" fxFill>
+                <mat-list-item *ngFor="let archivo of data.DatosEvento.Archivos; index as i"
+                                class="file">
+                  <mat-icon mat-list-icon
+                            [svgIcon]="fileIconName(archivo.Nombre)"></mat-icon>
+                  <h4 mat-line class="filename" fxFlex>{{ archivo.Nombre }}</h4>
+
+                  <button mat-icon-button
+                          type="button"
+                          (click)="onBorrarArchivo(archivo.Id, i)"
+                          *ngIf="!formDisabled"
+                          class="remove-file">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-list>
+
+              <div fxLayout="column" fxLayoutAlign="start center" fxFill>
+                <button mat-button
+                        (click)="onCargarArchivos()"
+                        type="button"
+                        *ngIf="!formDisabled && (data.DatosEvento.Archivos.length < MAX_FILE_COUNT)">
+                  <mat-icon>cloud_upload</mat-icon>CARGAR ARCHIVO
+                </button>
+                <app-file-upload [(ngModel)]="data.DatosEvento.Archivos"
+                                  name="Archivos"
+                                  maxFileNumber="5"
+                                  maxFileSizeMB="3"
+                                  required
+                                  [data]="uploadData"></app-file-upload>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="page-actions" fxLayout="row">
+
+    <button mat-mini-fab
+            type="submit"
+            [disabled]="!requestForm.valid"
+            class="btn-submit">
+      <mat-icon>check</mat-icon>
+    </button>
+
+  </div>
+
+
+  </form>
+
+

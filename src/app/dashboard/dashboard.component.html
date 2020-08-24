@@ -1,0 +1,120 @@
+
+<div class="doc-page">
+
+  <!-- HEADER -->
+  <app-header-content [title]="title">
+    <div page-actions fxLayout="row">
+
+      <div fxLayout="column">
+        <h4 class="term-label">Resumen {{ selectedTerm.Label }}</h4>
+        <div fxFlex></div>
+        <span class="term-enddate">solicitudes al {{ selectedTerm.EndDate  | date:'EEE dd MMM yyyy, hh:mm a'}}</span>
+      </div>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon aria-label="Cambiar Periodo">settings</mat-icon>
+      </button>
+    </div>
+  </app-header-content>
+
+  <mat-menu #menu="matMenu">
+      <button *ngFor="let item of terms"
+              mat-menu-item
+              (click)="onTermChanged(item)">{{ item.Label }}</button>
+  </mat-menu>
+
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content" fxLayout="column" fxLayoutGap="16px">
+
+    <!-- OVERLAY -->
+    <app-loader #loader="loader"></app-loader>
+    <!-- ***** -->
+
+    <mat-card fxFlex>
+
+      <mat-card-header>
+        <mat-card-title>
+          <h4>Solicitudes por Tipo</h4>
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <ngx-charts-pie-chart
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="requestTypeData"
+          [animations]="true"
+          [legend]="true"
+          labels="true"
+          trimLabels="false"
+          maxLabelLength="50"
+          [labelFormatting]="setLabelFormatting"
+          legendTitle="Tipo de Solicitud"
+          [tooltipDisabled]="false">
+        </ngx-charts-pie-chart>
+
+      </mat-card-content>
+    </mat-card>
+
+    <div fxLayout="row" fxLayoutGap="16px">
+
+      <mat-card fxFlex="50" fxFlex.xs="100">
+
+        <mat-card-header>
+          <mat-card-title>
+            <h4>Solicitudes por Programa</h4>
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+
+          <ngx-charts-pie-chart
+            [view]="view"
+            [scheme]="colorScheme"
+            [results]="programsData"
+            [animations]="true"
+            [legend]="true"
+            labels="true"
+            trimLabels="false"
+            maxLabelLength="50"
+            legendTitle="Programa"
+            [tooltipDisabled]="false">
+          </ngx-charts-pie-chart>
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card fxFlex="50" fxFlex.xs="100">
+
+          <mat-card-header>
+            <mat-card-title>
+              <h4>Solicitudes por Sede</h4>
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+
+            <ngx-charts-pie-chart
+              [view]="view"
+              [scheme]="colorScheme"
+              [results]="branchesData"
+              [animations]="true"
+              [legend]="true"
+              labels="true"
+              trimLabels="false"
+              maxLabelLength="50"
+              legendTitle="Sede"
+              [tooltipDisabled]="false">
+            </ngx-charts-pie-chart>
+
+          </mat-card-content>
+        </mat-card>
+
+    </div>
+  </div>
+
+
+  <!-- / CONTENT-->

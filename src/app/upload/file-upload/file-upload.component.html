@@ -1,0 +1,9 @@
+<input type="file"
+      #file style="display: none"
+      (change)="onFilesAdded()"
+      accept="image/jpeg,image/gif,image/png,application/pdf,.xlsx,.xls,.doc, .docx"
+      multiple />
+
+<mat-spinner *ngIf="(progressMode === ProgressMode.SPINNER) && (loading | async)"
+                [diameter]="spinnerDiameter"
+                mode="indeterminate"></mat-spinner>

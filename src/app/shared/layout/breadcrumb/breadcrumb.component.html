@@ -1,0 +1,10 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item home"><mat-icon>home</mat-icon></li>
+  <!-- <li *ngFor="let breadcrumb of breadcrumbs$ | async" -->
+  <li *ngFor="let breadcrumb of breadcrumbs"
+      class="breadcrumb-item">
+    <a [routerLink]="[breadcrumb.url]">
+      {{ breadcrumb.label }}
+    </a>
+  </li>
+</ol>

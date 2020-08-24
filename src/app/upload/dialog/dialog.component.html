@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Subiendo archivos adjuntos</h1>
+
+<mat-dialog-content fxFlex>
+  <mat-list>
+    <mat-list-item>
+      <mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress | async"></mat-progress-bar>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>

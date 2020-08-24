@@ -1,0 +1,35 @@
+<div class="vertical-timeline"
+    [ngClass]="class">
+
+    <div *ngFor="let event of events" [attr.id]="'event_' + event.id" class="vertical-timeline-element"
+      [ngClass]="event.class">
+      <!-- <VisibilitySensor onChange={this.onVisibilitySensorChange}> -->
+      <div>
+        <span class="vertical-timeline-element-icon" [ngClass]="{ 'bounce-in': animate }">
+            <mat-icon>{{ event.icon }}</mat-icon>
+        </span>
+        <div class="vertical-timeline-element-content" [ngClass]="{ 'bounce-in': animate }">
+          <div [innerHTML]="event.content"></div>
+          <span class="vertical-timeline-element-date">
+            {{ event.date | date:'EEE dd MMM yyyy' }}
+          </span>
+
+          <a mat-button color="" *ngIf="event.hasDetails" >
+            <mat-icon aria-label="ver detalle">search</mat-icon>
+            ver detalle
+          </a>
+          <span *ngIf="event.hasFiles" >
+              <mat-icon aria-label="adjuntos">attach_files</mat-icon> archivos adjuntos
+          </span>
+
+          <ul *ngIf="event.hasFiles">
+            <li *ngFor="let file of event.files">
+              <a class="link-file" [href]="filePath( file.Nombre, event.id )">{{ file.Nombre}}</a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+      <!-- </VisibilitySensor> -->
+    </div>
+</div>

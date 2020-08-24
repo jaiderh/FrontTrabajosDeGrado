@@ -1,0 +1,312 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import "~@angular/material/prebuilt-themes/indigo-pink.css"; */
+
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+// Import all the tools needed to customize the theme and extract parts of it
+@import '~@angular/material/theming';
+
+// APP THEME
+@import 'src/theme.scss';
+
+
+html {
+  font-family: "Roboto", "Helvetica Neue", "Arial", sans-serif;
+}
+
+
+.page-actions {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+}
+
+
+
+.logo {
+  width: 240px;
+  padding: 0;
+}
+
+.logo .logo-text {
+  margin-left: 16px;
+  font-size: 16px;
+}
+
+.logo .logo-image {
+  display: block;
+  background: mat-color($app-accent);
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  color: mat-color($app-primary);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 2px;
+}
+
+
+/**/
+.doc-page .header {
+  height: 8px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 4px 20px !important;
+
+  background-image: url(/assets/images/header-bg.png);
+  background-size: cover;
+}
+
+.doc-page .content {
+  padding: 16px;
+}
+
+.doc-page .header .breadcrumb {
+  /*margin-bottom: 0;*/
+  /*margin-bottom: 16px;*/
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.header .title {
+  font-size: 20px;
+  margin-top: 2px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.selected-menu-item {
+  color: mat-color($app-accent) !important;
+}
+
+
+/* DATETIME PICKER SELECTED AND ACTIONS BUTTONSS */
+.owl-dt-calendar-table .owl-dt-calendar-cell-selected  {
+  background-color: mat-color($app-primary);  /* PRIMARY COLOR THEME */
+}
+
+.owl-dt-container-buttons {
+  color: mat-color($app-primary);  /* PRIMARY COLOR THEME */
+}
+/* -------------------------------------------- */
+/* MAT-TABLE
+/* -------------------------------------------- */
+
+/* Mat-Table: Horizontal Scrolling              */
+
+.mat-table {
+  overflow: auto;
+}
+
+.mat-cell, .mat-header-cell {
+  margin-right: 14px;
+}
+
+/* Table Header */
+
+.mat-header-row {
+  min-height: 48px !important;
+  max-height: 48px;
+}
+
+.mat-header-cell {
+  font-weight: bold !important;
+  color: mat-color($app-primary);
+}
+
+/* Table Row */
+
+.mat-row:hover {
+  background-color: #EEEEEE;
+}
+
+.mat-row:hover .mat-column-actions .mat-icon {
+  color: mat-color($app-primary)
+}
+
+/* -------------------------------------------- */
+
+
+
+
+/* Mat-Tabs: TABS NUMBERS                       */
+.mat-tab-labels {
+  counter-reset: tab-number;
+}
+
+.mat-tab-label {
+  counter-increment: tab-number;
+  opacity: 1 !important;
+}
+
+.wizard .mat-tab-label .mat-tab-label-content:before {
+      content: counter(tab-number);
+      font-weight: bold;
+      border-radius: 50%;
+      margin-right: 5px;
+      padding: 5px 10px;
+      color: white;
+      background-color: mat-color($app-primary);  /* PRIMARY COLOR THEME */
+  }
+
+.wizard .mat-tab-label.mat-tab-label-active .mat-tab-label-content:before {
+      content: counter(tab-number);
+      color: mat-color($app-primary);  /* PRIMARY COLOR THEME */
+      font-weight: bold;
+      border-radius: 50%;
+      margin-right: 5px;
+      padding: 5px 10px;
+      /*border: solid 2px rgb(0, 77, 64);*/
+      background-color: mat-color($app-accent);   /* ACCENT COLOR THEME */
+  }
+/* -------------------------------------------- */
+
+.content {
+  padding: 12px;
+}
+
+/* Mat-Card: CARD OBJECT WITH TABLE AS CONTENT */
+.mat-card.card-table {
+  padding: 0px;
+}
+
+
+.mat-card-content.table {
+  position: relative;
+}
+
+.mat-cell {
+  font-size: 12px !important;
+}
+
+.mat-header-row, .mat-row {
+  padding: 0 !important;
+}
+
+.mat-column-actions {
+  max-width: 60px;
+  text-align: center;
+}
+
+
+/* -------------------------------------------- */
+
+/* Mat-Table: Request List */
+.mat-column-Code,
+.mat-column-Act,
+.mat-column-Priority {
+  max-width: 70px;
+}
+
+.mat-column-City {
+  max-width: 90px;
+}
+
+.mat-column-Date {
+  max-width: 170px;
+}
+
+.mat-column-Applicants {
+  min-width: 300px;
+}
+
+.mat-column-RequestType {
+  max-width: 250px;
+}
+
+.mat-column-State {
+  max-width: 160px;
+}
+
+.mat-column-Program {
+  max-width: 200px;
+}
+/* -------------------------------------------- */
+
+/* MAT-LIST */
+.mat-list-item {
+  -webkit-transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.mat-list-item:hover {
+  background-color: rgba(158,158,158,0.2);
+}
+
+.mat-list-item.file:hover {
+  cursor: pointer;
+}
+
+.mat-list-item .filename {
+  font-size: 14px !important;
+}
+/* -------------------------------------------- */
+
+/* MAT-SNACKBAR */
+.mat-snack-bar-container.error .mat-simple-snackbar {
+  color:  orange;
+}
+
+.mat-snack-bar-container.information .mat-simple-snackbar {
+  color: cyan;
+}
+
+.mat-snack-bar-container.alert .mat-simple-snackbar {
+  color: yellow;
+}
+
+/* -------------------------------------------- */
+
+/* MAT-HINT */
+.mat-hint {
+  color:mat-color($app-warn) !important;
+}
+
+
+
+/* MAT-TAB */
+.mat-ink-bar {
+    background-color: mat-color($app-accent) !important;
+}
+
+
+/* TIMELINE */
+
+.icon-event-work {
+  background: rgb(33, 150, 243);
+  color: #fff;
+}
+
+.icon-event-education {
+  background: rgb(233, 30, 99);
+  color: #fff;
+}
+
+/*  GLOBAL STYLES */
+.vertical-timeline-element-content {
+  color: black;
+}
+
+.vertical-timeline-element--work .vertical-timeline-element-content {
+  /* border-top: 3px solid #2196f3; */
+  border-top: 3px solid #cddc39;
+}
+
+.vertical-timeline-element--work .vertical-timeline-element-icon {
+  /* background: rgb(33, 150, 243); */
+  background: #cddc39;
+  color: #fff;
+}
+
+.vertical-timeline-element--education .vertical-timeline-element-content {
+  border-top: 3px solid #004d40;
+  /* border-top: 3px solid #e91e63; */
+}
+
+.vertical-timeline-element--education .vertical-timeline-element-icon {
+  /* background: rgb(233, 30, 99); */
+  background: #004d40;
+  color: #fff;
+}

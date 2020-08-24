@@ -1,0 +1,27 @@
+
+.mat-card-title {
+  margin: 0;
+}
+
+.mat-card-title h4 {
+  margin: 0;
+}
+
+.mat-card .mat-card-content {
+  min-height: 280px;
+}
+
+.mat-card {
+  padding: 12px;
+}
+
+h4.term-label {
+  margin:0;
+}
+
+span.term-enddate {
+  font-style: italic;
+  color: dimgray;
+  font-size: 13px;
+  margin-top: -10px;
+}

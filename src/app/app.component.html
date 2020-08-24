@@ -1,21 +1,118 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="app-container">
 
-<router-outlet></router-outlet>
+  <mat-progress-bar mode="indeterminate" color="accent" [style.visibility]="loading ? 'visible': 'hidden'"></mat-progress-bar>
+
+  <!-- APP Toolbar -->
+  <mat-toolbar fxLayout="row" class="app-toolbar mat-elevation-z6" color="primary">
+
+    <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+        <div class="logo-image" color="primary">G</div>
+        <div class="logo-text" color="white">{{title}} </div>
+    </div>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-icon-button color="white"
+      (click)="toggle()">
+      <mat-icon [@iconChange]="isCollapsed">first_page</mat-icon>
+    </button>
+
+    <h3>Sistema de Gestión de Trabajos de Grado</h3>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+  </mat-toolbar>
+
+  <div fxFill class="drawer-container">
+      <mat-drawer-container fxFill [class.folded]="isCollapsed">
+          <mat-drawer class="mat-elevation-z6" mode="side" [opened]="false"
+          [class.isMouseOverMenu]="isMouseOverMenu"
+          [ngStyle]="{ 'width.px': sideNavWidth }"
+          (mouseover)="processMouseEvents(true)"
+          (mouseout)="processMouseEvents(false)" >
+              <mat-nav-list>
+
+                <!--
+                <div class="navegation-item header">
+                    <span mat-subheader>INICIO</span>
+                </div>
+
+                <mat-list-item [routerLink]="['/dashboard']" class="navegation-item" routerLinkActive="selected-menu-item">
+                      <mat-icon>trending_up</mat-icon>
+                      <span class="item-text">Dashboard</span>
+                </mat-list-item>
+
+
+                <div class="navegation-item header">
+                  <span mat-subheader>SOLICITUDES</span>
+                </div>
+
+                <mat-list-item [routerLink]="['/solicitudes']" routerLinkActive="selected-menu-item" class="navegation-item">
+                    <mat-icon>local_post_office</mat-icon>
+                    <span class="item-text">Gestión de Solicitudes</span>
+                </mat-list-item>
+
+
+                <div class="navegation-item header">
+                  <span mat-subheader>CONCEJOS DE FACULTAD</span>
+                </div>
+
+                <mat-list-item [routerLink]="['/actas']" routerLinkActive="selected-menu-item" class="navegation-item">
+                    <mat-icon>collections_bookmark</mat-icon>
+                    <span class="item-text">Actas</span>
+                </mat-list-item>
+
+
+                <div class="navegation-item header">
+                  <span mat-subheader>PLANTILLAS</span>
+                </div>
+-->
+                <!--
+
+                <mat-list-item [routerLink]="['/actas']" routerLinkActive="selected-menu-item" class="navegation-item">
+                    <mat-icon>collections_bookmark</mat-icon>
+                    <span class="item-text">Actas</span>
+                </mat-list-item>
+
+              -->
+
+                <!-- <mat-list-item class="navegation-item iconless" [routerLink]="['/plantillas','NOTIFSOLICITUD']" routerLinkActive="selected-menu-item">
+                    <span class="item-text">Notificación Solicitud</span>
+                </mat-list-item>
+
+                <mat-list-item class="navegation-item iconless" [routerLink]="['/plantillas','NOTIFRESPUESTA']" routerLinkActive="selected-menu-item">
+                    <span class="item-text">Notificación Respuesta</span>
+                </mat-list-item>
+
+                <mat-list-item class="navegation-item iconless" [routerLink]="['/plantillas','INFMIEMBROSACTAS']" routerLinkActive="selected-menu-item">
+                    <span class="item-text">Asistentes Concejos</span>
+                </mat-list-item>
+
+                <mat-list-item class="navegation-item iconless" [routerLink]="['/plantillas','INFFIRMANTESACTAS']" routerLinkActive="selected-menu-item">
+                    <span class="item-text">Firmantes Acta</span>
+                </mat-list-item> -->
+
+
+                <div class="navegation-item header">
+                  <span mat-subheader>TRABAJOS DE GRADO</span>
+                </div>
+<!--
+                <mat-list-item class="navegation-item" [routerLink]="['trabajos-de-grado/lista-proyectos']">
+                    <mat-icon>class</mat-icon>
+                    <span class="item-text">Proyectos</span>
+                </mat-list-item>-->
+
+              </mat-nav-list>
+          </mat-drawer>
+
+          <mat-drawer-content  [@fadeAnimation]="state(o)"
+                               [ngStyle]="{ 'margin-left.px': navContentLeft }">
+            <router-outlet #o="outlet"></router-outlet>
+          </mat-drawer-content>
+
+        </mat-drawer-container>
+  </div>
+</div>
+
+

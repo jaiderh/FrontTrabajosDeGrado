@@ -1,0 +1,85 @@
+
+<div class="doc-page">
+
+  <!-- HEADER -->
+  <app-header-content [title]="title">
+    <div page-actions>
+      <app-loader #loader="loader" diameter="40" [type]="LoaderType.SPINNER_ONLY"></app-loader>
+      <button mat-mini-fab color="accent"
+              *ngIf="!existsUnclosedCouncil && !loader.show"
+              (click)="onCouncilAdd()">
+        <mat-icon class="mat-18">add</mat-icon>
+      </button>
+    </div>
+  </app-header-content>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+    <mat-card class="card-table" fxLayoutAlign="space-between center" >
+      <mat-card-content class="table" fxFlexFill>
+
+        <!-- TABLE -->
+        <mat-table [dataSource]="dataSource"
+                    matSort
+                    matSortActive="Code"
+                    matSortDirection="desc"
+                    matSortDisableClear>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>
+              <app-table-filter #filterRef="tableFilter" [filterSettings]="filterSettings"></app-table-filter>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession">
+              <button mat-icon-button [routerLink]="['/actas',councilSession.Id]" matTooltip="ver detalle">
+                <mat-icon class="mat-18" color="accent">search</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="Code">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header>
+              <div>Codigo</div>
+              <mat-form-field>
+                <input matInput placeholder="filtrar">
+              </mat-form-field>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession"> {{councilSession.Code}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="DateTime">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header> Fecha / Hora </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession"> {{councilSession.DateTime | date:'EEE dd MMM yyyy, hh:mm a'}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="SessionType">
+            <mat-header-cell *matHeaderCellDef> Clase de Reunión </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession"> {{councilSession.SessionType}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="StartDate">
+            <mat-header-cell *matHeaderCellDef> Fecha Inicio </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession"> {{councilSession.StartDate | date:'EEE dd MMM yyyy'}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="EndDate">
+            <mat-header-cell *matHeaderCellDef> Fecha Fin </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession"> {{councilSession.EndDate | date:'EEE dd MMM yyyy'}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="State">
+            <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+            <mat-cell *matCellDef="let councilSession"> {{councilSession.State}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+        <mat-paginator #paginator
+                        [pageSize]="5"
+                        [pageSizeOptions]="[5, 10]"
+                        [showFirstLastButtons]="true">
+        </mat-paginator>
+
+
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+

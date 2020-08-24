@@ -1,0 +1,193 @@
+<div fxLayout="column" mat-dialog-title class="mat-elevation-z2">
+  <h4>Solicitud No. {{ request.Code }}</h4>
+  <span class="request-date">Fecha de Registro: {{ request.Date | date:'EEE dd MMM yyyy, hh:mm a' }}</span>
+</div>
+
+<mat-dialog-content>
+
+  <!-- OVERLAY -->
+  <app-loader #loader="loader"></app-loader>
+  <!-- ***** -->
+
+  <div fxLayout="column">
+
+    <div fxLayout="row" fxLayoutGap="10px" fxFlex>
+      <mat-form-field fxFlex fxFlex.xs="100">
+        <mat-select name="requestType" [(ngModel)]="request.RequestTypeId" placeholder="Tipo de Solicitud">
+          <mat-option *ngFor="let requestType of requestTypes"
+                      [value]="requestType.Id"
+                      (onSelectionChange)="selectedRequestType = requestType"
+                      [disabled]="formDisabled">
+            {{ requestType.Name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="50" fxFlex.xs="100" *ngIf="request.RequestTypeDetail">
+          <input name matInput
+                  type="text"
+                  required
+                  [(ngModel)]="request.RequestTypeDetail"
+                  [placeholder]="selectedRequestType?.LabelDetail"
+                  [disabled]="formDisabled">
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="10px" fxFlex>
+      <mat-form-field fxFlex="30" fxFlex.xs="100">
+        <mat-select name="program" [(ngModel)]="request.ProgramId" placeholder="Programa"
+                    [disabled]="formDisabled">
+          <mat-option *ngFor="let program of programs"
+                      [value]="program.Id">
+            {{ program.Name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="40" fxFlex.xs="100">
+        <mat-select name="faculty" [(ngModel)]="request.FacultyId" placeholder="Facultad"
+                      [disabled]="formDisabled">
+          <mat-option *ngFor="let faculty of faculties"
+                      [value]="faculty.Id">
+            {{ faculty.Name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="30" fxFlex.xs="100">
+        <mat-select name="branch" [(ngModel)]="request.BranchId" placeholder="Sede"
+                    [disabled]="formDisabled">
+          <mat-option *ngFor="let branch of branches"
+                      [value]="branch.Id">
+            {{ branch.Name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <app-slide-panel [activePane]="isLeftVisible ? 'left' : 'right'">
+      <div leftPane>
+        <div fxLayout="row" fxLayoutGap="10px" fxFlex>
+
+          <mat-list dense fxFlex="50" fxFill>
+            <h3 mat-header class="mat-elevation-z2">Solicitantes</h3>
+            <mat-list-item *ngFor="let applicant of request.Applicants">
+              <h4 class="applicant-name" mat-line>{{ applicant.Name + ' ' + applicant.LastName }}</h4>
+              <div mat-line>
+                <mat-icon>email</mat-icon><span class="applicant-email"> {{ applicant.Email }} </span>
+                <mat-icon>phone</mat-icon><span class="applicant-phone"> {{ applicant.Phone }} </span>
+              </div>
+              <div mat-line>
+                <mat-icon>recent_actors</mat-icon><span class="applicant-document"> {{ applicant.Document }} </span>
+              </div>
+              <button *ngIf="applicant.RelatedRequests > 1"
+                      mat-icon-button
+                      [matTooltip]="'otras solicitudes de ' + applicant.Name + ' ' + applicant.LastName"
+                      (click)="onViewApplicantRequests(applicant)">
+                  <mat-icon>search</mat-icon>
+               </button>
+            </mat-list-item>
+          </mat-list>
+
+          <mat-list dense fxFlex="50" fxFill>
+            <h3 mat-header class="mat-elevation-z2">Archivos Adjuntos</h3>
+
+            <mat-list-item *ngFor="let file of request.Files"
+                            (click)="downloadFile(file.FileName)"
+                            class="file">
+              <mat-icon mat-list-icon [svgIcon]="fileIconName(file.FileName)"></mat-icon>
+              <h4 mat-line class="filename">{{ file.FileName }}</h4>
+            </mat-list-item>
+          </mat-list>
+        </div>
+      </div>
+      <div rightPane>
+        <h3 mat-header class="mat-elevation-z2">
+          <button align="end" (click)="onCloseRelatedRequests()" mat-icon-button>
+            <mat-icon color="primary">arrow_back</mat-icon>
+          </button>
+          Otras solicitudes de {{ selectedApplicant?.Name + ' ' + selectedApplicant?.LastName  }}
+        </h3>
+
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let request of relatedRequest">
+            <mat-expansion-panel-header>
+              <mat-panel-title fxLayout="column">
+                <div fxLayout="row" color="primary">
+                  <span class="related-request-code">{{ request.Code }}</span>
+                  <span class="related-request-type">: {{ request.RequestType }}</span>
+                </div>
+                <span class="related-request-date">{{ request.Date | date:'EEE dd MMM yyyy, hh:mm a' }}</span>
+              </mat-panel-title>
+              <mat-panel-description fxFex fxLayout="row" fxLayoutAlign="end center">
+                <span>{{ request.StateName }}</span>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            {{ request.Observations }}
+          </mat-expansion-panel>
+        </mat-accordion>
+
+
+      </div>
+    </app-slide-panel>
+
+
+    <!--
+    <mat-horizontal-stepper linear>
+        <mat-step #stepper>
+        </mat-step>
+        <mat-step>
+          <h3 mat-header class="mat-elevation-z2">Solicitudes de fulano</h3>
+            <button mat-button matStepperPrevious>Back</button>
+        </mat-step>
+      </mat-horizontal-stepper>
+    -->
+
+
+    <h3 mat-header class="mat-elevation-z2">Detalle</h3>
+    <ckeditor [config]="editorConfig" fxFill name="Detail" [(ngModel)]="request.Detail"></ckeditor>
+
+    <br />
+
+    <h3 mat-header class="mat-elevation-z2">Estado</h3>
+    <mat-form-field fxFlex>
+      <mat-select name="state" [(ngModel)]="request.State"
+                [disabled]="formDisabled">
+        <mat-option *ngFor="let state of requestStates"
+                    [value]="state.Id">
+          {{ state.Name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <h3 mat-header class="mat-elevation-z2">Observaciones</h3>
+    <mat-form-field fxFlex>
+      <textarea matInput
+                matTextareaAutosize
+                matAutosizeMinRows="10"
+                matAutosizeMaxRows="10"
+                maxlength="3000"
+                [(ngModel)]="request.Observations"
+                [disabled]="formDisabled"></textarea>
+      <mat-hint align="end">{{ request.Observations?.length }} / 3000</mat-hint>
+    </mat-form-field>
+
+  </div>
+</mat-dialog-content>
+
+<div mat-dialog-actions align="end">
+  <button mat-button
+          cdkFocusInitial
+          [mat-dialog-close]="response"
+          color="warn"
+          [disabled]="loader.show">
+    <mat-icon>undo</mat-icon>volver
+  </button>
+  <button mat-button
+          (click)="respond()"
+          color="primary"
+          [disabled]="loader.show"
+          *ngIf="!formDisabled">
+      <mat-icon>save</mat-icon>guardar
+  </button>
+</div>

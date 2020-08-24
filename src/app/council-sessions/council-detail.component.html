@@ -1,0 +1,194 @@
+<div class="doc-page">
+
+  <!-- HEADER -->
+  <app-header-content [title]="title">
+    <div page-actions>
+
+      <!-- LOADER -->
+      <app-loader #loader="loader" diameter="40" [type]="LoaderType.SPINNER_ONLY"></app-loader>
+      <!-- ***** -->
+
+      <button mat-mini-fab
+              color="accent"
+              matTooltip="Descargar Acta"
+              (click)="downloadFile()"
+              *ngIf="!loader.show">
+        <mat-icon class="mat-18">file_download</mat-icon>
+      </button>
+      <button mat-mini-fab
+              color="accent"
+              matTooltip="Guardar Acta"
+              (click)="saveCouncil()"
+              *ngIf="!formDisabled && !loader.show">
+        <mat-icon class="mat-18">save</mat-icon>
+      </button>
+    </div>
+  </app-header-content>
+  <!-- / HEADER -->
+
+  <!-- / CONTENT -->
+  <div>
+    <form>
+      <mat-tab-group class="wizard">
+        <mat-tab label="DATOS BÁSICOS">
+
+          <div fxLayout="row" fxLayoutAlign="center start">
+            <div fxFlex.gt-xs="80" fxLayout="column" fxFlex.xs="100" class="mat-elevation-z2 basic-data" fxLayoutGap="30px">
+
+              <!-- FECHA HORA, CLASE DE REUNIÓN y FECHA FIN -->
+              <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field fxFlex="25" fxFlex.xs="100">
+                  <input matInput name="DateTime" placeholder="Fecha y Hora de Reunión" [disabled]="formDisabled" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="council.DateTime">
+                  <owl-date-time #dt1></owl-date-time>
+                </mat-form-field>
+
+                <mat-form-field fxFlex="45" fxFlex.xs="100">
+                  <mat-select name="SessionType" [(ngModel)]="council.SessionType" [disabled]="formDisabled" placeholder="Clase de Reunión">
+                    <mat-option value="SESIÓN ORDINARIA">SESIÓN ORDINARIA</mat-option>
+                    <mat-option value="SESIÓN EXTRAORDINARIA">SESIÓN EXTRAORDINARIA</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field fxFlex="30" fxFlex.xs="100">
+                  <input matInput name="EndDate" placeholder="Fin de Periodo" [disabled]="formDisabled" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" [(ngModel)]="council.EndDate"
+                    (dateTimeChange)="onEndDateChange()">
+                  <owl-date-time #dt2></owl-date-time>
+                </mat-form-field>
+
+              </div>
+
+              <!-- LUGAR Y CIUDAD -->
+              <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field fxFlex="70" fxFlex.xs="100">
+                  <input matInput name="Location" placeholder="Lugar" [(ngModel)]="council.Location" [disabled]="formDisabled">
+                </mat-form-field>
+
+                <mat-form-field fxFlex="30" fxFlex.xs="100">
+                  <input matInput name="City" placeholder="Ciudad" [(ngModel)]="council.City" [disabled]="formDisabled">
+                </mat-form-field>
+              </div>
+
+              <!-- ESTADO y FECHA Y HORA DE CIERRE -->
+              <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field fxFlex="25" fxFlex.xs="100">
+                  <mat-select name="StateId" [(ngModel)]="council.StateId" [disabled]="formDisabled" placeholder="Estado">
+                    <mat-option [value]="1">ABIERTA</mat-option>
+                    <mat-option [value]="2">CERRADA</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field fxFlex="25" fxFlex.xs="100">
+                  <input matInput name="DueDate" placeholder="Fecha y Hora de Cierre" [disabled]="formDisabled" [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3" [(ngModel)]="council.DueDate">
+                  <owl-date-time #dt3></owl-date-time>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="ASISTENTES E INVITADOS">
+          <ckeditor [config]="editorConfig" [(ngModel)]="council.AttendeesAndGuests" name="AttendeesAndGuests" fxFill></ckeditor>
+        </mat-tab>
+        <mat-tab label="ASUNTOS DE DECANATURA">
+          <ckeditor [config]="editorConfig" fxFill name="MeetingTopics" [(ngModel)]="council.MeetingTopics"></ckeditor>
+        </mat-tab>
+        <mat-tab label="CORRESPONDENCIA">
+          <mat-card class="card-table" fxLayoutAlign="space-between center">
+            <mat-card-content class="table" fxFlexFill>
+
+              <!-- TABLE -->
+              <mat-table [dataSource]="dataSource" matSort matSortActive="Code" matSortDirection="desc" matSortDisableClear>
+                <ng-container matColumnDef="actions">
+                  <!--
+                  <mat-header-cell *matHeaderCellDef>
+                    </mat-header-cell>
+
+                    <mat-cell *matCellDef="let request">
+                    </mat-cell>
+                  -->
+
+                  <mat-header-cell *matHeaderCellDef>
+                    <app-table-filter #filterRef="tableFilter" [filterSettings]="filterSettings"></app-table-filter>
+                  </mat-header-cell>
+
+                  <mat-cell *matCellDef="let request">
+                    <button mat-icon-button
+                            matTooltip="ver detalle"
+                            [disabled]="loader.show"
+                            (click)="onClickDetail(request.Id)">
+                      <mat-icon *ngIf="!formDisabled" class="mat-18" color="accent">mode_edit</mat-icon>
+                      <mat-icon *ngIf="formDisabled" class="mat-18" color="accent">search</mat-icon>
+                    </button>
+                  </mat-cell>
+
+                </ng-container>
+                <ng-container matColumnDef="Code">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Código </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.Code}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Date">
+                  <mat-header-cell *matHeaderCellDef> Fecha </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.Date | date:'EEE dd MMM yyyy, hh:mm a'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RequestType">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de Solicitud </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.RequestType}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Applicants">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Solicitante(s) </mat-header-cell>
+                  <mat-cell *matCellDef="let request">
+                    <div *ngFor="let applicant of request.Applicants">
+                      {{ applicant.FullName }}
+                      <i>({{ applicant.ApplicantType }})</i>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Program">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Programa </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.Program}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Faculty">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Facultad </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.Faculty}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="State">
+                  <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.State}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Priority">
+                  <mat-header-cell *matHeaderCellDef> Prioridad </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.Priority}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="City">
+                  <mat-header-cell *matHeaderCellDef> Sede </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.City}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Act">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Acta </mat-header-cell>
+                  <mat-cell *matCellDef="let request"> {{request.Act}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+
+              <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10]" [showFirstLastButtons]="true">
+              </mat-paginator>
+            </mat-card-content>
+          </mat-card>
+        </mat-tab>
+        <mat-tab label="VARIOS">
+          <ckeditor [config]="editorConfig" fxFill name="Various" [(ngModel)]="council.Various"></ckeditor>
+        </mat-tab>
+        <mat-tab label="FIRMANTES">
+          <ckeditor [config]="editorConfig" fxFill name="Signers" [(ngModel)]="council.Signers"></ckeditor>
+        </mat-tab>
+      </mat-tab-group>
+
+    </form>
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

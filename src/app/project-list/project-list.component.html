@@ -1,0 +1,114 @@
+<div class="doc-page">
+  <!-- HEADER -->
+  <div class="header" fxLayout="row" fxLayoutAlign="space-between">
+      <div fxLayout="column" fxLayoutAlign="center start">
+          <div class="breadcrumb" layout="row" layout-align="start center">
+              <mat-icon class="mat-16">home</mat-icon>
+              <mat-icon class="mat-16 separator">keyboard_arrow_right</mat-icon>
+              <span class="parent">Trabajos de Grado</span>
+          </div>
+          <div class="title">Listado de Proyectos</div>
+      </div>
+      <!-- <div layout="row">
+        <button mat-mini-fab color="accent">
+            <mat-icon class="mat-18">add</mat-icon>
+        </button>
+      </div> -->
+  </div>
+  <!-- / HEADER -->
+
+  <!-- / CONTENT -->
+  <div class="content">
+    <mat-card class="card-table" fxLayoutAlign="space-between center" >
+      <mat-card-content class="table" fxFlexFill>
+        <!-- OVERLAY -->
+
+        <div class="loader-overlay"
+              *ngIf="loading$ | async"
+              fxLayout="row"
+              fxLayoutAlign="center center">
+          <div>
+            <mat-spinner diameter="80" mode="indeterminate"></mat-spinner>
+          </div>
+        </div>
+
+
+        <!-- TABLE -->
+        <mat-table [dataSource]="dataSource"
+                    matSort
+                    matSortActive="Code"
+                    matSortDirection="asc"
+                    matSortDisableClear>
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef>
+                <app-table-filter #filterRef="tableFilter" [filterSettings]="filterSettings"></app-table-filter>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let degreeProject">
+                <button mat-icon-button [routerLink]="['../detalle-proyecto', degreeProject.Id]"  matTooltip="ver detalle">
+                  <mat-icon class="mat-18" color="accent">search</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Codigo">
+              <mat-header-cell *matHeaderCellDef  mat-sort-header> Código </mat-header-cell>
+              <mat-cell *matCellDef="let degreeProject"> {{degreeProject.Codigo}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Titulo">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Título Proyecto </mat-header-cell>
+              <mat-cell *matCellDef="let degreeProject"> {{degreeProject.Titulo}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Autores">
+                <mat-header-cell *matHeaderCellDef  mat-sort-header> Autor(es) </mat-header-cell>
+                <mat-cell *matCellDef="let degreeProject"> {{degreeProject.Autores}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Director">
+                <mat-header-cell *matHeaderCellDef  mat-sort-header> Director </mat-header-cell>
+                <mat-cell *matCellDef="let degreeProject">
+                  <div fxLayout="column" fxLayoutAlign="start start">
+                    {{degreeProject.Director.NombreCompleto}}
+                    <span class="tipo-director">{{degreeProject.Director.Tipo}}</span>
+                  </div>
+                 </mat-cell>
+              </ng-container>
+
+            <ng-container matColumnDef="Programa">
+                <mat-header-cell *matHeaderCellDef  mat-sort-header> Programa </mat-header-cell>
+                <mat-cell *matCellDef="let degreeProject"> {{degreeProject.Programa}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Sede">
+                  <mat-header-cell *matHeaderCellDef  mat-sort-header> Sede </mat-header-cell>
+                  <mat-cell *matCellDef="let degreeProject"> {{degreeProject.Sede}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Estado">
+                    <mat-header-cell *matHeaderCellDef  mat-sort-header> Estado </mat-header-cell>
+                    <mat-cell *matCellDef="let degreeProject"> {{degreeProject.Estado}} </mat-cell>
+                  </ng-container>
+
+            <ng-container matColumnDef="FechaRegistro">
+              <mat-header-cell *matHeaderCellDef> Fecha Registro </mat-header-cell>
+              <mat-cell *matCellDef="let degreeProject"> {{degreeProject.FechaRegistro  | date:'EEE dd MMM yyyy, hh:mm a'}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+
+        <mat-paginator #paginator
+                        [pageSize]="10"
+                        [pageSizeOptions]="[5, 10]"
+                        [showFirstLastButtons]="true">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+
+

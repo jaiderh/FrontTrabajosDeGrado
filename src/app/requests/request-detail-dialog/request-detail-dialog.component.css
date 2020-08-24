@@ -1,0 +1,62 @@
+
+.mat-dialog-title {
+  background-color: whitesmoke;
+}
+
+.mat-dialog-title h4 {
+  margin: 0;
+}
+
+.mat-dialog-title span.request-date {
+  font-style: italic;
+  color: dimgray;
+  font-size: 13px;
+  margin-top: -10px;
+}
+.related-request-date {
+  font-style: italic;
+  color: dimgray;
+  font-size: 11px;
+}
+
+.related-request-code {
+  font-weight: bold;
+}
+
+h3[mat-header] {
+  margin: 0;
+  padding: 12px;
+  background-color: whitesmoke;
+}
+
+h4.applicant-name {
+  margin: 0;
+  height: 16px;
+}
+
+h4.file-name {
+  margin-left: 20px;
+}
+
+.applicant-email, .applicant-phone, .applicant-document {
+  color: gray;
+  font-style: italic;
+}
+
+.mat-list .mat-icon {
+  color: gray;
+}
+
+.mat-line .mat-icon {
+  font-size: 14px;
+  vertical-align: text-top;
+  height: 16px;
+}
+
+.mat-line .mat-icon:not(:first-child) {
+  margin-left: 20px;
+}
+
+.mat-stepper-horizontal .mat-horizontal-stepper-header-container {
+  display: none !important;
+}

@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.parent {
+  width: 200%;
+}
